@@ -1,0 +1,18 @@
+{
+  "gui.blocksCounter.title": "Считатель блоков от MaximPixel",
+  "gui.blocksCounter.startStop": "Старт/стоп",
+  "gui.blocksCounter.startNewSession": "Начать новую сессию",
+  "gui.blocksCounter.openFolder": "Открыть папку",
+  "gui.blocksCounter.refresh": "Обновить",
+  "gui.blocksCounter.toggleHud": "Скрыть/показать худ",
+  "category.blockСounter.keys": "Считатель блоков от MaximPixel",
+  "key.blocksСounter.openScreen": "Открыть меню",
+  "blocksCounter.toast.sessionSaved": "Сессия сохранена!",
+  "blocksCounter.toast.sessionSavedAs": "Сессия была сохранена как %s",
+  "blocksCounter.sessionStopped": "Сессия остановлена",
+  "blocksCounter.sessionStarted": "Сессия запущена",
+  "blocksCounter.placed": "Поставлено: ",
+  "blocksCounter.broken": "Сломано: ",
+  "blocksCounter.statusStopped": "Не работает (нажми кнопку старт/стоп) :(",
+  "blocksCounter.statusRunning": "Работает :)"
+}

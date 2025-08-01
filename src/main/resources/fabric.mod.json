@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "blockscounter",
+  "version": "${version}",
+  "name": "BlocksCounter",
+  "description": "Mod for logging placed and broken blocks",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/blockscounter/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": [
+      "net.maximpixel.blockscounter.client.BlockscounterDataGenerator"
+    ],
+    "client": [
+      "net.maximpixel.blockscounter.client.BlockscounterClient"
+    ],
+    "main": [
+      "net.maximpixel.blockscounter.Blockscounter"
+    ]
+  },
+  "mixins": [
+    "blockscounter.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

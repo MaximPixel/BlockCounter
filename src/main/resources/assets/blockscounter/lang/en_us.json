@@ -1,0 +1,18 @@
+{
+  "gui.blocksCounter.title": "Block Counter by MaximPixel",
+  "gui.blocksCounter.startStop": "Start/Stop",
+  "gui.blocksCounter.startNewSession": "Start New Session",
+  "gui.blocksCounter.openFolder": "Open Folder",
+  "gui.blocksCounter.refresh": "Refresh",
+  "gui.blocksCounter.toggleHud": "Toggle HUD",
+  "category.blockСounter.keys": "Block Counter by MaximPixel",
+  "key.blocksСounter.openScreen": "Open Menu",
+  "blocksCounter.toast.sessionSaved": "Session saved!",
+  "blocksCounter.toast.sessionSavedAs": "Session was saved as %s",
+  "blocksCounter.sessionStopped": "Session stopped",
+  "blocksCounter.sessionStarted": "Session started",
+  "blocksCounter.placed": "Placed: ",
+  "blocksCounter.broken": "Broken: ",
+  "blocksCounter.statusStopped": "Not running (press Start/Stop) :(",
+  "blocksCounter.statusRunning": "Running :)"
+}
