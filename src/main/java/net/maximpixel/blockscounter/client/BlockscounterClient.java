@@ -28,6 +28,7 @@ public class BlockscounterClient implements ClientModInitializer {
     public static long prevBroken = -1;
     public static int placedCooldown = 0;
     public static int brokenCooldown = 0;
+    public static int stopedCooldown = 0;
 
     public static void onPlace(ItemPlacementContext context, Supplier<BlockState> placementStateSupplier) {
         try {
@@ -74,6 +75,20 @@ public class BlockscounterClient implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+
+            boolean isStop = BlockscounterConfig.INSTANCE.isStop();
+
+            if (isStop) {
+                stopedCooldown++;
+            } else {
+                stopedCooldown = 0;
+            }
+
+            if (client.options.hudHidden || stopedCooldown > 1000) {
+                return;
+            }
+
             Session session = Session.getInstance();
 
             if (prevPlaced != session.getPlaced()) {
@@ -103,11 +118,9 @@ public class BlockscounterClient implements ClientModInitializer {
                 brokenCooldown--;
             }
 
-            MinecraftClient client = MinecraftClient.getInstance();
-
             ArrayList<Text> lines = new ArrayList<>();
 
-            if (BlockscounterConfig.INSTANCE.isStop()) {
+            if (isStop) {
                 lines.add(Text.translatable("blocksCounter.sessionStopped")
                         .styled(style -> style.withColor(Formatting.RED)));
             } else {
