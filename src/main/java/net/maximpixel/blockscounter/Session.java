@@ -6,15 +6,18 @@ import com.google.gson.JsonObject;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -122,7 +125,26 @@ public class Session {
         return jsonObject;
     }
 
-    public synchronized void writePlaced(BlockPos pos, BlockState placementState) {
+    private void addDimensionToJsonArray(JsonArray jsonArray, RegistryEntry<DimensionType> dimension) {
+        if (dimension == null) {
+            jsonArray.add(0);
+            return;
+        }
+
+        String id = dimension.getIdAsString();
+
+        if ("minecraft:overworld".equals(id)) {
+            jsonArray.add(1);
+        } else if ("minecraft:the_nether".equals(id)) {
+            jsonArray.add(2);
+        } else if ("minecraft:the_end".equals(id)) {
+            jsonArray.add(3);
+        } else {
+            jsonArray.add(id);
+        }
+    }
+
+    public synchronized void writePlaced(BlockPos pos, RegistryEntry<DimensionType> dimension, BlockState placementState, BlockState replacedState) {
         if (placementState == null) {
             return;
         }
@@ -135,12 +157,15 @@ public class Session {
             jsonArray.add(pos.getX());
             jsonArray.add(pos.getY());
             jsonArray.add(pos.getZ());
+            addDimensionToJsonArray(jsonArray, dimension);
             jsonArray.add(1);
-            jsonArray.add(placementState == null ? null : placementState.getRegistryEntry().getIdAsString());
-
-            if (placementState != null) {
-                jsonArray.add(stateToJsonObject(placementState));
+            jsonArray.add(placementState.getRegistryEntry().getIdAsString());
+            jsonArray.add(stateToJsonObject(placementState));
+            if (!replacedState.isAir()) {
+                jsonArray.add(replacedState.getRegistryEntry().getIdAsString());
+                jsonArray.add(stateToJsonObject(replacedState));
             }
+            jsonArray.add(Instant.now().getEpochSecond());
 
             fileOutputStream.write((GSON.toJson(jsonArray) + "\n").getBytes());
         } catch (IOException e) {
@@ -148,7 +173,7 @@ public class Session {
         }
     }
 
-    public synchronized void writeBroken(BlockPos pos, BlockState brokenState) {
+    public synchronized void writeBroken(BlockPos pos, RegistryEntry<DimensionType> dimension, BlockState brokenState) {
         if (brokenState == null) {
             return;
         }
@@ -161,12 +186,11 @@ public class Session {
             jsonArray.add(pos.getX());
             jsonArray.add(pos.getY());
             jsonArray.add(pos.getZ());
+            addDimensionToJsonArray(jsonArray, dimension);
             jsonArray.add(2);
-            jsonArray.add(brokenState == null ? null : brokenState.getRegistryEntry().getIdAsString());
-
-            if (brokenState != null) {
-                jsonArray.add(stateToJsonObject(brokenState));
-            }
+            jsonArray.add(brokenState.getRegistryEntry().getIdAsString());
+            jsonArray.add(stateToJsonObject(brokenState));
+            jsonArray.add(Instant.now().getEpochSecond());
 
             fileOutputStream.write((GSON.toJson(jsonArray) + "\n").getBytes());
         } catch (IOException e) {

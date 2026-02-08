@@ -10,11 +10,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.dimension.DimensionType;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -22,6 +27,8 @@ import java.util.function.Supplier;
 
 public class BlockscounterClient implements ClientModInitializer {
 
+    public static final KeyBinding.Category KEYS_CATEGORY =
+            new KeyBinding.Category(Identifier.of("blockscounter", "category"));
     public static KeyBinding openScreenKey;
 
     public static long prevPlaced = -1;
@@ -32,7 +39,7 @@ public class BlockscounterClient implements ClientModInitializer {
 
     public static void onPlace(ItemPlacementContext context, Supplier<BlockState> placementStateSupplier) {
         try {
-            if (context.getWorld().isClient) {
+            if (context.getWorld().isClient()) {
                 if (BlockscounterConfig.INSTANCE.isStop()) {
                     return;
                 }
@@ -40,7 +47,10 @@ public class BlockscounterClient implements ClientModInitializer {
                 BlockState placementState = placementStateSupplier.get();
                 BlockPos blockPos = context.getBlockPos();
 
-                Session.getInstance().writePlaced(blockPos, placementState);
+                if (context.canPlace()) {
+                    Session.getInstance()
+                            .writePlaced(blockPos, context.getWorld().getDimensionEntry(), placementState, context.getWorld().getBlockState(blockPos));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +63,9 @@ public class BlockscounterClient implements ClientModInitializer {
                 return;
             }
 
-            Session.getInstance().writeBroken(pos, state);
+            RegistryEntry<DimensionType> dimensionEntry = world instanceof World ? ((World) world).getDimensionEntry() : null;
+
+            Session.getInstance().writeBroken(pos, dimensionEntry, state);
         }
     }
 
@@ -63,7 +75,7 @@ public class BlockscounterClient implements ClientModInitializer {
                 "key.blocksСounter.openScreen",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_G,
-                "category.blockСounter.keys"
+                KEYS_CATEGORY
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
