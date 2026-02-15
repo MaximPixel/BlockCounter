@@ -52,7 +52,7 @@ public class Session {
                         try {
                             JsonArray jsonArray = GSON.fromJson(a, JsonArray.class);
 
-                            return jsonArray.get(3).getAsJsonPrimitive().getAsInt() == 1;
+                            return jsonArray.get(4).getAsJsonPrimitive().getAsInt() == 1;
                         } catch (Exception e) {
                             return false;
                         }
@@ -71,7 +71,7 @@ public class Session {
                         try {
                             JsonArray jsonArray = GSON.fromJson(a, JsonArray.class);
 
-                            return jsonArray.get(3).getAsJsonPrimitive().getAsInt() == 2;
+                            return jsonArray.get(4).getAsJsonPrimitive().getAsInt() == 2;
                         } catch (Exception e) {
                             return false;
                         }
